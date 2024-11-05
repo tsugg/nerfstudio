@@ -104,6 +104,11 @@ class ColmapConverterToNerfstudioDataset(BaseConverterToNerfstudioDataset):
     use_single_camera_mode: bool = True
     """Whether to assume all images taken with the same camera characteristics, set to False for multiple cameras in colmap (only works with hloc sfm_tool).
     """
+    keep_original_world_coordinate: bool = True
+    """If True, no extra transform will be applied to world coordinate.
+                    Colmap optimized world often have y direction of the first camera pointing towards down direction,
+                    while nerfstudio world set z direction to be up direction for viewer.
+    """
 
     @staticmethod
     def default_colmap_path() -> Path:
@@ -140,6 +145,7 @@ class ColmapConverterToNerfstudioDataset(BaseConverterToNerfstudioDataset):
                     camera_mask_path=camera_mask_path,
                     image_rename_map=image_rename_map,
                     use_single_camera_mode=self.use_single_camera_mode,
+                    keep_original_world_coordinate=self.keep_original_world_coordinate
                 )
                 summary_log.append(f"Colmap matched {num_matched_frames} images")
             summary_log.append(colmap_utils.get_matching_summary(num_frames, num_matched_frames))
